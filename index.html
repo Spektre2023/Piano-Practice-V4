@@ -6,8 +6,12 @@
   <title>Lincoln’s Piano Practice</title>
   <style>
     :root{
-      --bg:#0b1220; --muted:#8fa3c7; --text:#eaf0ff; --line:rgba(255,255,255,.10);
-      --shadow: 0 10px 30px rgba(0,0,0,.35); --radius:16px;
+      --bg:#0b1220;
+      --muted:#8fa3c7;
+      --text:#eaf0ff;
+      --line:rgba(255,255,255,.10);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:16px;
       --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     *{box-sizing:border-box}
@@ -18,12 +22,16 @@
                   radial-gradient(900px 700px at 30% 90%, rgba(251,191,36,.12), transparent 60%),
                   var(--bg);
     }
-    header{max-width:980px; margin:22px auto 10px; padding:0 16px; display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; align-items:flex-end;}
+    header{
+      max-width:980px; margin:22px auto 10px; padding:0 16px;
+      display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; align-items:flex-end;
+    }
     h1{margin:0; font-size:22px}
     .sub{margin:6px 0 0; color:var(--muted); font-size:13px}
     main{max-width:980px; margin:14px auto 30px; padding:0 16px; display:grid; gap:14px}
     .grid{display:grid; grid-template-columns:1.15fr .85fr; gap:14px}
     @media (max-width: 860px){ .grid{grid-template-columns:1fr} }
+
     .card{
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--line);
@@ -39,6 +47,7 @@
       background:rgba(0,0,0,.18); border:1px solid var(--line);
       color:var(--text); outline:none;
     }
+    input:focus{border-color:rgba(125,211,252,.65); box-shadow:0 0 0 4px rgba(125,211,252,.12)}
     .btn{
       border:1px solid var(--line);
       background:rgba(255,255,255,.06);
@@ -47,16 +56,30 @@
       border-radius:12px;
       cursor:pointer;
       user-select:none;
+      transition:.12s transform ease, .12s background ease, .12s border-color ease;
     }
     .btn:hover{background:rgba(255,255,255,.09)}
+    .btn:active{transform:translateY(1px)}
     .btn.primary{background:rgba(125,211,252,.18); border-color:rgba(125,211,252,.35)}
     .btn.good{background:rgba(134,239,172,.15); border-color:rgba(134,239,172,.35)}
     .btn.warn{background:rgba(251,191,36,.12); border-color:rgba(251,191,36,.35)}
     .btn.bad{background:rgba(251,113,133,.12); border-color:rgba(251,113,133,.35)}
+    .btn.ghost{background:rgba(255,255,255,.04)}
     .mini{padding:8px 10px; font-size:12px}
     .field{flex:1; min-width:160px}
     .mins{max-width:140px}
+
+    .pillrow{display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end}
+    .pill{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      padding:8px 10px; border-radius:999px; font-size:12px; color:var(--muted);
+      display:flex; gap:8px; align-items:center;
+    }
+    .pill b{color:var(--text)}
+
     .list{margin-top:12px; display:grid; gap:10px}
+
     .item{
       border:1px solid var(--line);
       background:rgba(0,0,0,.16);
@@ -67,6 +90,7 @@
       gap:10px;
       align-items:center;
     }
+
     .check{
       width:18px; height:18px; border-radius:6px;
       border:1px solid rgba(255,255,255,.24);
@@ -77,21 +101,30 @@
     .check[data-done="true"]{background:rgba(134,239,172,.20); border-color:rgba(134,239,172,.55)}
     .check svg{opacity:0}
     .check[data-done="true"] svg{opacity:1}
-    .name{font-weight:700}
+
+    .name{font-weight:750}
     .meta{color:var(--muted); font-size:12px; margin-top:4px}
-    .actions{display:flex; gap:8px; align-items:center}
+    .actions{display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
+    .drag{
+      font-size:16px; line-height:1;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.04);
+      color:rgba(234,240,255,.9);
+      cursor:grab;
+      user-select:none;
+      touch-action:none;
+    }
+    .drag:active{cursor:grabbing}
+    .item.dragging{opacity:.65; outline:2px dashed rgba(125,211,252,.45)}
+    .item.dropTarget{outline:2px solid rgba(134,239,172,.35)}
+
     .bigTime{font-size:64px; font-weight:900; text-align:center; letter-spacing:1px}
     .progress{border:1px solid var(--line); border-radius:999px; height:12px; background:rgba(0,0,0,.16); overflow:hidden}
     .bar{height:100%; width:0%; background:linear-gradient(90deg, rgba(125,211,252,.9), rgba(134,239,172,.9))}
     .smallnote{font-size:12px; color:var(--muted); line-height:1.35}
-    .pill{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-      padding:8px 10px; border-radius:999px; font-size:12px; color:var(--muted);
-      display:flex; gap:8px; align-items:center;
-    }
-    .pill b{color:var(--text)}
-    .pillrow{display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end}
+
     .toast{
       position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
       background:rgba(17,27,46,.92);
@@ -104,6 +137,7 @@
       font-size:13px;
       z-index:1000;
     }
+
     .fsOverlay{
       position:fixed; inset:0; z-index:999;
       display:none;
@@ -131,7 +165,6 @@
     .fsBtn.primary{background:rgba(125,211,252,.20); border-color:rgba(125,211,252,.40)}
     .fsBtn.warn{background:rgba(251,191,36,.14); border-color:rgba(251,191,36,.45)}
     .fsBtn.bad{background:rgba(251,113,133,.14); border-color:rgba(251,113,133,.45)}
-    .debug{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size:12px; color:rgba(234,240,255,.85); white-space:pre-wrap;}
   </style>
 </head>
 <body>
@@ -141,7 +174,6 @@
       <div class="sub">Add tasks, set minutes, start the timer, then tick them off ✅</div>
     </div>
     <div class="pillrow">
-      <div class="pill">Status: <b id="jsStatus">Loading…</b></div>
       <div class="pill">Planned: <b id="plannedMin">0</b> min</div>
       <div class="pill">Done: <b id="doneMin">0</b> min</div>
       <div class="pill">Completed: <b id="completedCount">0</b>/<span id="totalCount">0</span></div>
@@ -153,12 +185,13 @@
       <div class="row" style="justify-content:space-between; align-items:flex-end;">
         <div>
           <div style="font-weight:800;">Practice List</div>
-          <div class="smallnote">If buttons do nothing, you’re viewing in a “preview” that blocks JavaScript. Open in Safari/Chrome.</div>
+          <div class="smallnote">
+            Reorder items by dragging the <b>≡</b> handle, or using ↑ ↓. “Next” follows this order.
+          </div>
         </div>
         <div class="row">
-          <button class="btn mini" id="testBtn">Test Button</button>
-          <button class="btn warn" id="resetTodayBtn">Reset Today</button>
-          <button class="btn bad" id="wipeAllBtn">Wipe All</button>
+          <button class="btn warn mini" id="resetTodayBtn" title="Keeps list, clears ticks & done minutes">Reset Today</button>
+          <button class="btn bad mini" id="wipeAllBtn" title="Deletes everything">Wipe All</button>
         </div>
       </div>
 
@@ -167,7 +200,7 @@
       <div class="row">
         <div class="field">
           <label>Practice item</label>
-          <input id="newName" placeholder="e.g., Scales / Piece / Technique" maxlength="50">
+          <input id="newName" placeholder="e.g., Scales / Piece / Technique" maxlength="60">
         </div>
         <div class="field mins">
           <label>Minutes</label>
@@ -177,22 +210,13 @@
       </div>
 
       <div class="list" id="list"></div>
-
-      <div style="height:10px"></div>
-      <div class="card" style="background:rgba(0,0,0,.12); box-shadow:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div style="font-weight:800;">Debug</div>
-          <button class="btn mini" id="copyDebug">Copy</button>
-        </div>
-        <div class="debug" id="debugOut"></div>
-      </div>
     </section>
 
     <aside class="card">
       <div class="row" style="justify-content:space-between; align-items:center;">
         <div>
           <div style="font-weight:800;">Timer</div>
-          <div class="smallnote">Pick an item, press Start. Full Screen is big for the piano.</div>
+          <div class="smallnote">Pick an item → Start. Full Screen is big for the piano.</div>
         </div>
         <button class="btn primary" id="fullBtn">Full Screen</button>
       </div>
@@ -205,7 +229,7 @@
         <div class="row" style="justify-content:center; margin-top:10px;">
           <button class="btn good" id="startBtn">Start</button>
           <button class="btn" id="pauseBtn">Pause</button>
-          <button class="btn" id="nextBtn">Next</button>
+          <button class="btn warn" id="nextBtn">Next</button>
         </div>
       </div>
     </aside>
@@ -233,7 +257,7 @@
       </div>
 
       <div class="smallnote" style="text-align:center;">
-        iPhone tip: Open in Safari → Share → <b>Add to Home Screen</b>.
+        Tip: Add to Home Screen for a “real app” feel.
       </div>
     </div>
   </div>
@@ -243,11 +267,8 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const $ = (id) => document.getElementById(id);
-  const KEY = "lincoln_piano_practice_v3";
+  const KEY = "lincoln_piano_practice_v4";
   const TODAY_KEY = () => new Date().toISOString().slice(0,10);
-
-  const dbg = [];
-  const log = (m) => { dbg.unshift(`[${new Date().toLocaleTimeString()}] ${m}`); $("debugOut").textContent = dbg.slice(0,30).join("\n"); };
 
   let state = {
     items: [],
@@ -256,42 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
     timer: { itemId:null, remainingSec:0, totalSec:0, running:false, interval:null }
   };
 
-  function save(){
-    try{
-      localStorage.setItem(KEY, JSON.stringify({...state, timer:{...state.timer, interval:null}}));
-      log("Saved.");
-    }catch(e){
-      log("localStorage blocked (still OK): " + (e && e.message ? e.message : e));
-    }
-  }
-
-  function load(){
-    try{
-      const raw = localStorage.getItem(KEY);
-      if(raw) state = JSON.parse(raw);
-      log("Loaded.");
-    }catch(e){
-      log("Load failed (still OK): " + (e && e.message ? e.message : e));
-    }
-
-    const today = TODAY_KEY();
-    if(state.lastDate !== today){
-      state.lastDate = today;
-      state.doneMinutes = 0;
-      state.items = (state.items || []).map(it => ({...it, done:false}));
-      stopTimer(true);
-      save();
-      log("Daily reset.");
-    }
-
-    state.items ||= [];
-    state.timer ||= { itemId:null, remainingSec:0, totalSec:0, running:false, interval:null };
-    render();
-  }
-
-  function plannedMinutes(){ return state.items.reduce((a,it)=>a + (Number(it.minutes)||0), 0); }
-  function completedCount(){ return state.items.filter(it=>it.done).length; }
-  function currentItem(){ return state.items.find(i=>i.id === state.timer.itemId) || null; }
+  const uid = () => Math.random().toString(16).slice(2) + Date.now().toString(16);
 
   function showToast(msg){
     const t = $("toast");
@@ -300,6 +286,34 @@ document.addEventListener("DOMContentLoaded", () => {
     clearTimeout(showToast._t);
     showToast._t = setTimeout(()=> t.style.display="none", 1400);
   }
+
+  function save(){
+    try{
+      localStorage.setItem(KEY, JSON.stringify({...state, timer:{...state.timer, interval:null}}));
+    }catch(e){}
+  }
+
+  function load(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      if(raw) state = JSON.parse(raw);
+    }catch(e){}
+    const today = TODAY_KEY();
+    if(state.lastDate !== today){
+      state.lastDate = today;
+      state.doneMinutes = 0;
+      state.items = (state.items || []).map(it => ({...it, done:false}));
+      stopTimer(true);
+      save();
+    }
+    state.items ||= [];
+    state.timer ||= { itemId:null, remainingSec:0, totalSec:0, running:false, interval:null };
+    render();
+  }
+
+  function plannedMinutes(){ return state.items.reduce((a,it)=>a + (Number(it.minutes)||0), 0); }
+  function completedCount(){ return state.items.filter(it=>it.done).length; }
+  function currentItem(){ return state.items.find(i=>i.id === state.timer.itemId) || null; }
 
   function formatTime(sec){
     sec = Math.max(0, Math.floor(sec));
@@ -339,19 +353,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTimerUI();
   }
 
-  function beep(){
-    try{
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.type = "sine"; o.frequency.value = 880;
-      g.gain.value = 0.05;
-      o.connect(g); g.connect(ctx.destination);
-      o.start();
-      setTimeout(()=>{ o.stop(); ctx.close(); }, 180);
-    }catch(e){}
-  }
-
   function tick(){
     if(!state.timer.running) return;
     state.timer.remainingSec -= 1;
@@ -362,10 +363,10 @@ document.addEventListener("DOMContentLoaded", () => {
       showToast("Time’s up! Tick if finished ✅");
       beep();
       save();
-      log("Timer finished.");
       return;
     }
     updateTimerUI();
+    save();
   }
 
   function startTimer(){
@@ -375,7 +376,6 @@ document.addEventListener("DOMContentLoaded", () => {
     state.timer.running = true;
     state.timer.interval = setInterval(tick, 1000);
     save();
-    log("Timer started.");
   }
 
   function setCurrent(item){
@@ -391,7 +391,6 @@ document.addEventListener("DOMContentLoaded", () => {
     state.timer.remainingSec = state.timer.totalSec;
     updateTimerUI();
     save();
-    log(`Selected: ${item.name} (${item.minutes} min)`);
   }
 
   function nextItem(){
@@ -400,18 +399,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const next = state.items.slice(idx+1).find(i=>!i.done) || state.items.find(i=>!i.done) || null;
     setCurrent(next);
     render();
-    log("Next item.");
-  }
-
-  function toggleDone(id){
-    const it = state.items.find(x=>x.id===id);
-    if(!it) return;
-    const wasDone = it.done;
-    it.done = !it.done;
-    if(!wasDone && it.done){ state.doneMinutes += Number(it.minutes||0); showToast("Nice! ✅"); }
-    else if(wasDone && !it.done){ state.doneMinutes = Math.max(0, state.doneMinutes - Number(it.minutes||0)); showToast("Unticked."); }
-    save();
-    render();
   }
 
   function addItem(){
@@ -419,11 +406,69 @@ document.addEventListener("DOMContentLoaded", () => {
     const minutes = Number($("newMinutes").value);
     if(!name){ showToast("Type a practice item."); return; }
     if(!minutes || minutes < 1){ showToast("Set minutes (1–90)."); return; }
-    state.items.push({ id: Math.random().toString(16).slice(2)+Date.now().toString(16), name, minutes, done:false });
+    state.items.push({ id: uid(), name, minutes, done:false });
     $("newName").value = ""; $("newMinutes").value = "";
-    save();
-    render();
-    log(`Added: ${name} (${minutes} min)`);
+    save(); render();
+    showToast("Added ✅");
+  }
+
+  function toggleDone(id){
+    const it = state.items.find(x=>x.id===id);
+    if(!it) return;
+    const wasDone = it.done;
+    it.done = !it.done;
+    if(!wasDone && it.done){ state.doneMinutes += Number(it.minutes||0); }
+    else if(wasDone && !it.done){ state.doneMinutes = Math.max(0, state.doneMinutes - Number(it.minutes||0)); }
+    save(); render();
+  }
+
+  function editItem(id){
+    const it = state.items.find(x=>x.id===id);
+    if(!it) return;
+
+    const newName = prompt("Edit practice item:", it.name);
+    if(newName === null) return;
+    const nm = newName.trim();
+    if(!nm){ showToast("Name not changed."); return; }
+
+    const newMins = prompt("Edit minutes (1–90):", String(it.minutes));
+    if(newMins === null) return;
+    const m = Number(newMins);
+    if(!m || m < 1 || m > 90){ showToast("Minutes not changed."); return; }
+
+    if(it.done){
+      state.doneMinutes = Math.max(0, state.doneMinutes - Number(it.minutes||0));
+      state.doneMinutes += m;
+    }
+
+    it.name = nm;
+    it.minutes = m;
+
+    if(state.timer.itemId === it.id) setCurrent(it);
+    save(); render();
+    showToast("Updated ✅");
+  }
+
+  function deleteItem(id){
+    const idx = state.items.findIndex(x=>x.id===id);
+    if(idx < 0) return;
+    const it = state.items[idx];
+    if(!confirm(`Delete "${it.name}"?`)) return;
+
+    if(it.done) state.doneMinutes = Math.max(0, state.doneMinutes - Number(it.minutes||0));
+    state.items.splice(idx, 1);
+
+    if(state.timer.itemId === id) stopTimer(true);
+    save(); render();
+    showToast("Deleted 🗑️");
+  }
+
+  function moveItem(from, to){
+    if(from === to) return;
+    if(from < 0 || to < 0 || from >= state.items.length || to >= state.items.length) return;
+    const [it] = state.items.splice(from, 1);
+    state.items.splice(to, 0, it);
+    save(); render();
   }
 
   function resetToday(){
@@ -432,15 +477,59 @@ document.addEventListener("DOMContentLoaded", () => {
     state.items = state.items.map(it => ({...it, done:false}));
     stopTimer(true);
     save(); render();
-    log("Reset today.");
+    showToast("Reset ✅");
   }
 
   function wipeAll(){
     if(!confirm("Wipe everything? This cannot be undone.")) return;
-    try{ localStorage.removeItem(KEY); }catch(e){}
-    state = { items:[], doneMinutes:0, lastDate:TODAY_KEY(), timer:{ itemId:null, remainingSec:0, totalSec:0, running:false, interval:null } };
-    render();
-    log("Wiped all.");
+    localStorage.removeItem(KEY);
+    location.reload();
+  }
+
+  function beep(){
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "sine"; o.frequency.value = 880;
+      g.gain.value = 0.05;
+      o.connect(g); g.connect(ctx.destination);
+      o.start();
+      setTimeout(()=>{ o.stop(); ctx.close(); }, 180);
+    }catch(e){}
+  }
+
+  function openFullScreen(){ $("fsOverlay").style.display = "block"; updateTimerUI(); }
+  function closeFullScreen(){ $("fsOverlay").style.display = "none"; }
+
+  // Drag & drop reorder
+  let dragIndex = null;
+  function onDragStart(e, index){
+    dragIndex = index;
+    if(e.dataTransfer){
+      e.dataTransfer.setData("text/plain", String(index));
+      e.dataTransfer.effectAllowed = "move";
+    }
+    e.currentTarget.closest(".item")?.classList.add("dragging");
+  }
+  function onDragEnd(e){
+    e.currentTarget.closest(".item")?.classList.remove("dragging");
+    document.querySelectorAll(".item.dropTarget").forEach(x=>x.classList.remove("dropTarget"));
+    dragIndex = null;
+  }
+  function onDragOver(e){
+    e.preventDefault();
+    if(e.dataTransfer) e.dataTransfer.dropEffect = "move";
+    e.currentTarget.classList.add("dropTarget");
+  }
+  function onDragLeave(e){
+    e.currentTarget.classList.remove("dropTarget");
+  }
+  function onDrop(e, dropIndex){
+    e.preventDefault();
+    const from = dragIndex !== null ? dragIndex : Number(e.dataTransfer?.getData("text/plain"));
+    if(Number.isFinite(from)) moveItem(from, dropIndex);
+    document.querySelectorAll(".item.dropTarget").forEach(x=>x.classList.remove("dropTarget"));
   }
 
   function render(){
@@ -451,6 +540,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const list = $("list");
     list.innerHTML = "";
+
     if(state.items.length === 0){
       const empty = document.createElement("div");
       empty.className = "smallnote";
@@ -460,9 +550,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    state.items.forEach(it => {
+    state.items.forEach((it, index) => {
       const el = document.createElement("div");
       el.className = "item";
+      el.addEventListener("dragover", onDragOver);
+      el.addEventListener("dragleave", onDragLeave);
+      el.addEventListener("drop", (e)=>onDrop(e, index));
 
       const check = document.createElement("div");
       check.className = "check";
@@ -484,11 +577,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const actions = document.createElement("div");
       actions.className = "actions";
+
       const pick = document.createElement("button");
       pick.className = "btn mini primary";
       pick.textContent = "Pick";
       pick.onclick = () => setCurrent(it);
+
+      const edit = document.createElement("button");
+      edit.className = "btn mini";
+      edit.textContent = "Edit";
+      edit.onclick = () => editItem(it.id);
+
+      const del = document.createElement("button");
+      del.className = "btn mini bad";
+      del.textContent = "Delete";
+      del.onclick = () => deleteItem(it.id);
+
+      const up = document.createElement("button");
+      up.className = "btn mini ghost";
+      up.textContent = "↑";
+      up.title = "Move up";
+      up.onclick = () => moveItem(index, Math.max(0, index-1));
+
+      const down = document.createElement("button");
+      down.className = "btn mini ghost";
+      down.textContent = "↓";
+      down.title = "Move down";
+      down.onclick = () => moveItem(index, Math.min(state.items.length-1, index+1));
+
+      const drag = document.createElement("div");
+      drag.className = "drag";
+      drag.textContent = "≡";
+      drag.title = "Drag to reorder";
+      drag.setAttribute("draggable", "true");
+      drag.addEventListener("dragstart", (e)=>onDragStart(e, index));
+      drag.addEventListener("dragend", onDragEnd);
+
       actions.appendChild(pick);
+      actions.appendChild(edit);
+      actions.appendChild(del);
+      actions.appendChild(up);
+      actions.appendChild(down);
+      actions.appendChild(drag);
 
       el.appendChild(check);
       el.appendChild(mid);
@@ -499,19 +629,19 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTimerUI();
   }
 
-  function openFullScreen(){ $("fsOverlay").style.display = "block"; updateTimerUI(); log("Opened full screen overlay."); }
-  function closeFullScreen(){ $("fsOverlay").style.display = "none"; log("Closed overlay."); }
-
-  // Bind buttons
+  // Bind
   $("addBtn").addEventListener("click", addItem);
+  $("newName").addEventListener("keydown", (e)=>{ if(e.key==="Enter") addItem(); });
+  $("newMinutes").addEventListener("keydown", (e)=>{ if(e.key==="Enter") addItem(); });
+
   $("startBtn").addEventListener("click", startTimer);
-  $("pauseBtn").addEventListener("click", () => { pauseTimer(); save(); updateTimerUI(); log("Paused."); });
+  $("pauseBtn").addEventListener("click", () => { pauseTimer(); save(); updateTimerUI(); });
   $("nextBtn").addEventListener("click", nextItem);
   $("fullBtn").addEventListener("click", openFullScreen);
 
   $("fsExitBtn").addEventListener("click", closeFullScreen);
   $("fsStart").addEventListener("click", startTimer);
-  $("fsPause").addEventListener("click", () => { pauseTimer(); save(); updateTimerUI(); log("Paused (FS)."); });
+  $("fsPause").addEventListener("click", () => { pauseTimer(); save(); updateTimerUI(); });
   $("fsNext").addEventListener("click", nextItem);
   $("fsTick").addEventListener("click", () => {
     const it = currentItem();
@@ -523,23 +653,6 @@ document.addEventListener("DOMContentLoaded", () => {
   $("resetTodayBtn").addEventListener("click", resetToday);
   $("wipeAllBtn").addEventListener("click", wipeAll);
 
-  $("testBtn").addEventListener("click", () => { showToast("Buttons are working ✅"); log("Test button clicked."); });
-
-  $("copyDebug").addEventListener("click", async () => {
-    const txt = $("debugOut").textContent || "";
-    try{
-      await navigator.clipboard.writeText(txt);
-      showToast("Copied debug ✅");
-    }catch(e){
-      showToast("Copy not allowed here");
-    }
-  });
-
-  $("newName").addEventListener("keydown", (e)=>{ if(e.key==="Enter") addItem(); });
-  $("newMinutes").addEventListener("keydown", (e)=>{ if(e.key==="Enter") addItem(); });
-
-  $("jsStatus").textContent = "JS running ✅";
-  log("App initialized. If clicks still do nothing, open in Safari/Chrome (not preview).");
   load();
 });
 </script>
